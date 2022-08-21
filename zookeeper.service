@@ -1,0 +1,29 @@
+[Unit]
+Description=Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
+Documentation=https://zookeeper.apache.org/doc/r3.7.1/zookeeperStarted.html
+After=network.target
+
+[Service]
+Type=forking
+Environment=ZOOPIDFILE=/data/zookeeper/data/zookeeper_server.pid
+Environment=ZOO_LOG_DIR=/data/zookeeper/logs/
+Environment=PATH=/usr/local/bin:/usr/bin
+WorkingDirectory=/usr/local/zookeeper
+User=zookeeper
+
+PermissionsStartOnly=true
+
+ExecStartPre=-/usr/bin/mkdir -p /data/zookeeper/data
+ExecStartPre=-/usr/bin/mkdir -p /data/zookeeper/logs
+ExecStartPre=-/usr/bin/chown -R zookeeper:zookeeper /usr/local/zookeeper
+ExecStartPre=-/usr/bin/chown -R zookeeper:zookeeper /data/zookeeper
+
+ExecStart=/usr/local/zookeeper/bin/zkServer.sh start
+ExecStop=/usr/local/zookeeper/bin/zkServer.sh stop
+ExecReload=/usr/local/zookeeper/bin/zkServer.sh restart
+
+PIDFile=/data/zookeeper/data/zookeeper_server.pid
+
+
+[Install]
+WantedBy=multi-user.target
